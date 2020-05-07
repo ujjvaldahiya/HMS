@@ -1,0 +1,71 @@
+{% extends "HMS/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-3" style="padding: 10px;">
+      <div class="vertical-menu">
+        <h5>Menu</h5>
+        <a href="{% url 'Profile'%}">Profile</a>
+        <a href="{% url 'Change_Password'%}">Change Password</a>
+        {% if utype == 'patient'%}
+          <a href="{% url 'Appointments'%}">Appointments</a>
+          <a href="{% url 'Prescriptions'%}" class="active" >Prescriptions</a>
+          <a href="{% url 'Lab_Reports'%}">Lab Reports</a>
+        {%elif utype == 'surgeon' or utype == 'physician'%}
+          <a href="{% url 'Appointments'%}">Appointments</a>
+        {% elif utype == 'laboratory'%}
+          <a href="{% url 'LabTests_Lab'%}">Lab Tests</a>
+        {% elif utype == 'medicalstore'%}
+          <a href="{% url 'Prescriptions'%}" class="active" >Prescriptions</a>
+        {%endif%}
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-9" style="padding: 10px;">
+      <div class="container-fluid content-section">
+        {%if utype == 'patient'%}
+          <legend class = "border-bottom mb-4">Prescriptions</legend>
+        {% else%}
+          <legend class = "border-bottom mb-4">Today's Prescriptions</legend>
+        {% endif %}
+        <table class="table table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th>Prescription Id</th>
+              {% if utype == 'patient'%}
+                <th>Date</th>
+                <th>Treatment Type</th>
+                <th>Physician/Surgeon</th>
+              {% elif utype == 'medicalstore'%}
+                <th>Patient Id</th>
+                <th>Patient Name</th>
+              {% endif %}
+              <th>View</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%for prescription in prescriptions%}
+              <tr>
+                <td>{{prescription.prescriptionid}}</td>
+                {%if utype == 'patient'%}
+                  <td>{{prescription.patientid.date}}</td>
+                  <td>{{prescription.patientid.treatmenttype}}</td>
+                  {% if prescription.patientid.treatmenttype == 'surgery'%}
+                    <td>{{prescription.patientid.surgeonid.name}}</td>
+                  {% else %}
+                    <td>{{prescription.patientid.physicianid.name}}</td>
+                  {%endif%}
+                {% elif utype == 'medicalstore'%}
+                  <td>{{prescription.patientid.pk}}</td>
+                  <td>{{prescription.patientid.user.first_name}} {{prescription.patientid.user.last_name}}</td>
+                {% endif %}
+                <td><a href="{% url 'View_Prescriptions' prescriptionid=prescription.prescriptionid%}" target="_blank">Open</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

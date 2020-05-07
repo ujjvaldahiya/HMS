@@ -1,0 +1,10 @@
+{% extends "HMS/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+      <div class="container-fluid content-section">
+        <h3 style="color: red;"> Un-authorised access! please go back to home page.</h3>
+        <br>
+        <p align="center"><a align="center" class="btn btn-primary text-white" role="button" style="background-color: rgb(0,0,0);" href="{% url 'HMS-Home'%}">Take me home</a></p>
+      </div>
+
+{% endblock content %}

@@ -1,0 +1,58 @@
+{%extends "HMS/base.html"%}
+{%block content%}
+
+<div class="card text">
+  <div class="card-header">
+    <h1>Physicians Availability Status</h1>
+  </div>
+  <div class="card-body">
+    <div class="container-fluid">
+      <h6>Filter:</h6>
+      <form class="form-inline"action="{%url 'Physicians'%}" method="POST">
+        {%csrf_token%}
+          <select class="custom-select mb-3" style="max-width: 150px;" name="speciality" onchange="this.form.submit()">
+            {%if filter == 'None'%}
+              <option selected>All specialities</option>
+            {% else %}
+              <option>All specialities</option>
+            {% endif %}
+            {% for speciality in specialities%}
+              {%if speciality == filter%}
+                <option selected>{{speciality}}</option>
+              {% else %}
+                <option>{{speciality}}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+      </form>
+    </div>
+    <div class="container-fluid">
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Physicians Id</th>
+            <th>Name</th>
+            <th>Speciality</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for physician in physicians%}
+          <tr>
+            <td>{{physician.physicianid}}</td>
+            <td>{{physician.name}}</td>
+            <td>{{physician.speciality}}</td>
+            {% if physician.occupied %}
+              <td>Busy</td>
+            {% else %}
+              <td>Available</td>
+            {%endif%}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{%endblock content%}

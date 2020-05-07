@@ -1,0 +1,82 @@
+{% extends "HMS/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container content-section">
+  {% if error != 'None'%}
+  <div class="alert alert-success alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    {{error}}
+  </div>
+  {%endif%}
+  <legend class = "border-bottom mb-4">New Appointment</legend>
+  <form method = "POST" action="{% url 'New_Appointment'%}">
+      {%csrf_token%}
+      <div class="form-group">
+        <label for="date">Select Date: </label>
+        <br>
+        <select class="custom-select mb-3" style="max-width: 250px;" name="date" onchange="this.form.submit()">
+          {% for date in dates %}
+          {% if sdate == date%}
+            <option selected>{{date}}</option>
+          {%else%}
+            <option>{{date}}</option>
+          {%endif%}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="ttype">Treatment Type: </label>
+        <br>
+        <select class="custom-select mb-3" style="max-width: 250px;" name="ttype" onchange="this.form.submit()">
+          {% for ttype in ttypes %}
+          {% if sttype == ttype%}
+            <option selected>{{ttype}}</option>
+          {%else%}
+            <option>{{ttype}}</option>
+          {%endif%}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="speciality">Select Speciality: </label>
+        <br>
+        <select class="custom-select mb-3" style="max-width: 250px;" name="speciality" onchange="this.form.submit()">
+          {% for speciality in specialities %}
+          {% if sspeciality == speciality%}
+            <option selected>{{speciality}}</option>
+          {%else%}
+            <option>{{speciality}}</option>
+          {%endif%}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="doctor">Select Doctor: </label>
+        <br>
+        <select class="custom-select mb-3" style="max-width: 250px;" name="doctor" onchange="this.form.submit()">
+          {% for doctor in doctors %}
+            {% if sdoctor == doctor and doctor != '-------' %}
+                <option selected>{{doctor}}</option>
+            {%else%}
+                <option>{{doctor}}</option>
+            {%endif%}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="time">Select Time: </label>
+        <br>
+        <select class="custom-select mb-3" style="max-width: 250px;" name="time">
+          {% for time in times %}
+          {% if stime == time%}
+            <option selected>{{time}}</option>
+          {%else%}
+            <option>{{time}}</option>
+          {%endif%}
+          {% endfor %}
+        </select>
+      </div>
+      <button class="btn btn-dark" type="submit">Submit</button>
+  </form>
+</div>
+{% endblock content %}

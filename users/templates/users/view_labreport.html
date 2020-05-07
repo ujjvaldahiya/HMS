@@ -1,0 +1,45 @@
+{% extends "HMS/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-3" style="padding: 10px;">
+      <div class="vertical-menu">
+        <h5>Menu</h5>
+        <a href="{% url 'Profile'%}">Profile</a>
+        <a href="{% url 'Change_Password'%}">Change Password</a>
+        {% if utype == 'patient'%}
+          <a href="{% url 'Appointments'%}">Appointments</a>
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+          <a href="{% url 'Lab_Reports'%}" class="active">Lab Reports</a>
+        {%elif utype == 'surgeon' or utype == 'physician'%}
+          <a href="{% url 'Appointments'%}" class="active">Appointments</a>
+        {% elif utype == 'laboratory'%}
+          <a href="{% url 'Lab_Reports'%}" class="active">Lab Tests</a>
+        {% elif utype == 'medicalstore'%}
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+        {%endif%}
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-9" style="padding: 10px;">
+      <div class="container-fluid content-section">
+        {% if error != 'None'%}
+        <div class="alert alert-success alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          {{error}}
+        </div>
+        {%endif%}
+        {% if report != 'None'%}
+          <legend class = "border-bottom mb-4">Report id: {{report.reportid}}</legend>
+          <div class="vertical-menu">
+            <h6>Patient Id: {{report.patientid.pk}}</h6>
+            <h6>Patient Name: {{report.patientid.user.first_name}} {{report.patientid.user.last_name}}</h6>
+            <h6>Tests: {{report.tests}}</h6>
+            <h6>Results: {{report.results}}</h6>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

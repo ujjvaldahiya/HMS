@@ -1,0 +1,53 @@
+{% extends "HMS/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-3" style="padding: 10px;">
+      <div class="vertical-menu">
+        <h5>Menu</h5>
+        <a href="{% url 'Profile'%}">Profile</a>
+        <a href="{% url 'Change_Password'%}">Change Password</a>
+        {% if utype == 'patient'%}
+          <a href="{% url 'Appointments'%}" class='active'>Appointments</a>
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+          <a href="{% url 'Lab_Reports'%}">Lab Reports</a>
+        {%elif utype == 'surgeon' or utype == 'physician'%}
+          <a href="{% url 'Appointments'%}" class="active">Appointments</a>
+        {% elif utype == 'laboratory'%}
+          <a href="{% url 'LabTests_Lab'%}">Lab Tests</a>
+        {% elif utype == 'medicalstore'%}
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+        {%endif%}
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-9" style="padding: 10px;">
+      <div class="container-fluid content-section">
+        {% if error != 'None'%}
+        <div class="alert alert-success alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          {{error}}
+        </div>
+        {%endif%}
+        {% if patient != 'None'%}
+          <legend class = "border-bottom mb-4">Appointment detail</legend>
+          <div class="vertical-menu">
+            <h6>Patient Id: {{patient.patientid}}</h6>
+            <h6>Patient Name: {{patient.user.first_name}} {{patient.user.last_name}}</h6>
+            <h6>Time: {{patient.time}}</h6>
+            <h6>Date: {{patient.date}}</h6>
+            <h6>Treatment Type: {{patient.treatmenttype}}</h6>
+            {% if patient.treatmenttype == 'checkup' %}
+              <h6>Physician Name(id): {{patient.physicianid.name}}({{patient.physicianid.pk}})</h6>
+            {%else%}
+              <h6>Surgeon Name(id): {{patient.surgeonid.name}}({{patient.surgeonid.pk}})</h6>
+            {% endif%}
+            <h6>Registration Date: {{patient.regdate}}</h6>
+            <h6>Payment Reference No.: {{patient.paymentrefid}}</h6>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

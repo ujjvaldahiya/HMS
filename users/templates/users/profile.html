@@ -1,0 +1,51 @@
+{% extends "HMS/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-3" style="padding: 10px;">
+      <div class="vertical-menu">
+        <h5>Menu</h5>
+        <a href="{% url 'Profile'%}" class="active">Profile</a>
+        <a href="{% url 'Change_Password'%}">Change Password</a>
+        {% if utype == 'patient'%}
+          <a href="{% url 'Appointments'%}">Appointments</a>
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+          <a href="{% url 'Lab_Reports'%}">Lab Reports</a>
+        {%elif utype == 'surgeon' or utype == 'physician'%}
+          <a href="{% url 'Appointments'%}">Appointments</a>
+        {% elif utype == 'laboratory'%}
+          <a href="{% url 'Lab_Reports'%}">Lab Tests</a>
+        {% elif utype == 'medicalstore'%}
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+        {%endif%}
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-9" style="padding: 10px;">
+      <div class="container-fluid content-section">
+        <div class="row">
+          <div class="col-sm-12 col-md-3">
+            <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
+          </div>
+          <div class="col-sm-12 col-md-9 align-self-center">
+              <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+              <p>email: {{ user.email }}</p>
+              <p>user category: {{ utype }}</p>
+          </div>
+        </div>
+        <form method = "POST" enctype="multipart/form-data">
+            {%csrf_token%}
+            <fieldset class = "form-group">
+                <legend class = "border-bottom mb-4">Profile Information</legend>
+                {{ u_form|crispy }}
+                {{ p_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-dark" type="submit">Update</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

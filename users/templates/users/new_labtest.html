@@ -1,0 +1,45 @@
+{% extends "HMS/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-3" style="padding: 10px;">
+      <div class="vertical-menu">
+        <h5>Menu</h5>
+        <a href="{% url 'Profile'%}">Profile</a>
+        <a href="{% url 'Change_Password'%}">Change Password</a>
+        {% if utype == 'patient'%}
+          <a href="{% url 'Appointments'%}" class="active">Appointments</a>
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+          <a href="{% url 'Lab_Reports'%}">Lab Reports</a>
+        {%elif utype == 'surgeon' or utype == 'physician'%}
+          <a href="{% url 'Appointments'%}" class="active">Appointments</a>
+        {% elif utype == 'laboratory'%}
+          <a href="{% url 'Lab_Reports'%}">Lab Tests</a>
+        {% elif utype == 'medicalstore'%}
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+        {%endif%}
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-9" style="padding: 10px;">
+      <div class="container-fluid content-section">
+        {% if error != 'None'%}
+        <div class="alert alert-success alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          {{error}}
+        </div>
+        {%endif%}
+        <legend class = "border-bottom mb-4">Lab Test for {{patient.user.first_name}} {{patient.user.last_name}}</legend>
+        <form method = "POST" action="{% url 'New_LabTest' patientid=patient.patientid%}">
+            {%csrf_token%}
+            <div class="form-group">
+              <label for="tests" style="margin: 10px;">Tests</label>
+              <textarea class="form-control" style="margin: 10px;" type="text" name="tests"></textarea>
+            </div>
+            <button class="btn btn-primary" style="margin:10px;" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

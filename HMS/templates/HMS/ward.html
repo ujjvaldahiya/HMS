@@ -1,0 +1,73 @@
+{%extends "HMS/base.html"%}
+{%block content%}
+
+<div class="card text">
+  <div class="card-header">
+    <h1>Wards Availability Status</h1>
+  </div>
+  <div class="card-body">
+    <div class="container-fluid">
+      <h6>Filter:</h6>
+      <form class="form-inline"action="{%url 'Wards'%}" method="POST">
+        {%csrf_token%}
+          <select class="custom-select mb-3" style="max-width: 150px; margin:10px;" name="type">
+            {%if filterT == 'None'%}
+              <option selected>All Types</option>
+            {% else %}
+              <option>All Types</option>
+            {% endif %}
+            {% for type in types%}
+              {%if type == filterT%}
+                <option selected>{{type}}</option>
+              {% else %}
+                <option>{{type}}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+          <select class="custom-select mb-3" style="max-width: 150px; margin:10px;" name="gender">
+            {%if filterG == 'None'%}
+              <option selected>All Genders</option>
+            {% else %}
+              <option>All Genders</option>
+            {% endif %}
+            {% for gender in genders%}
+              {%if gender == filterG%}
+                <option selected>{{gender}}</option>
+              {% else %}
+                <option>{{gender}}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+          <button class="btn btn-primary mb-3" style="margin:10px;" type="submit">Apply</button>
+      </form>
+    </div>
+    <div class="container-fluid">
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Ward Id</th>
+            <th>Type</th>
+            <th>Gender</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ward in wards%}
+          <tr>
+            <td>{{ward.wardid}}</td>
+            <td>{{ward.type}}</td>
+            <td>{{ward.gender}}</td>
+            {% if ward.occupied %}
+              <td>Busy</td>
+            {% else %}
+              <td>Available</td>
+            {%endif%}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{%endblock content%}

@@ -1,0 +1,65 @@
+{% extends "HMS/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-3" style="padding: 10px;">
+      <div class="vertical-menu">
+        <h5>Menu</h5>
+        <a href="{% url 'Profile'%}">Profile</a>
+        <a href="{% url 'Change_Password'%}">Change Password</a>
+        {% if utype == 'patient'%}
+          <a href="{% url 'Appointments'%}">Appointments</a>
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+          <a href="{% url 'Lab_Reports'%}" class="active">Lab Reports</a>
+        {%elif utype == 'surgeon' or utype == 'physician'%}
+          <a href="{% url 'Appointments'%}">Appointments</a>
+        {% elif utype == 'laboratory'%}
+          <a href="{% url 'Lab_Reports'%}" class="active">Lab Tests</a>
+        {% elif utype == 'medicalstore'%}
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+        {%endif%}
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-9" style="padding: 10px;">
+      <div class="container-fluid content-section">
+        {%if utype == 'patient'%}
+          <legend class = "border-bottom mb-4">Lab Tests</legend>
+        {% else%}
+          <legend class = "border-bottom mb-4">Today's Lab Tests</legend>
+        {% endif %}
+        <table class="table table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th>Report Id</th>
+              {% if utype == 'patient'%}
+                <th>Date</th>
+              {% elif utype == 'laboratory'%}
+                <th>Patient Id</th>
+                <th>Patient Name</th>
+                <th>Edit</th>
+              {% endif %}
+              <th>View</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%for report in reports%}
+              <tr>
+                <td>{{report.reportid}}</td>
+                {% if utype == 'patient'%}
+                  <td>{{report.patientid.date}}</td>
+                {% elif utype == 'laboratory'%}
+                  <td>{{report.patientid.pk}}</td>
+                  <td>{{report.patientid.user.first_name}} {{report.patientid.user.last_name}}</td>
+                  <td><a href="{% url 'Result_LabTest' patientid=report.patientid.pk %}" target="_blank">Open</a></td>
+                {% endif %}
+                <td><a href="{% url 'View_LabReport' reportid=report.reportid %}" target="_blank">Open</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

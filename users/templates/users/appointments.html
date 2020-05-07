@@ -1,0 +1,106 @@
+{% extends "HMS/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-3" style="padding: 10px;">
+      <div class="vertical-menu">
+        <h5>Menu</h5>
+        <a href="{% url 'Profile'%}">Profile</a>
+        <a href="{% url 'Change_Password'%}">Change Password</a>
+        {% if utype == 'patient'%}
+          <a href="{% url 'Appointments'%}" class="active">Appointments</a>
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+          <a href="{% url 'Lab_Reports'%}">Lab Reports</a>
+        {%elif utype == 'surgeon' or utype == 'physician'%}
+          <a href="{% url 'Appointments'%}" class="active">Appointments</a>
+        {% elif utype == 'laboratory'%}
+          <a href="{% url 'Lab_Reports'%}">Lab Tests</a>
+        {% elif utype == 'medicalstore'%}
+          <a href="{% url 'Prescriptions'%}">Prescriptions</a>
+        {%endif%}
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-9" style="padding: 10px;">
+      <div class="container-fluid content-section">
+        {% if error != 'None'%}
+        <div class="alert alert-success alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          {{error}}
+        </div>
+        {%endif%}
+        {% if utype == 'surgeon' or utype == 'physician'%}
+        <legend class = "border-bottom mb-4">Today's Appointments</legend>
+        <form method = "POST" class="form-inline" action="{% url 'Appointments'%}">
+            {%csrf_token%}
+            <div class="form-group">
+              <label for="id" style="margin: 10px;">Physician/Surgeon ID</label>
+              <input class="form-control" style="margin: 10px;" type="text" name="id" placeholder="Physician/Surgeon ID"/>
+            </div>
+            <button class="btn btn-primary" style="margin:10px;" type="submit">Go</button>
+        </form>
+        {% else %}
+          <legend class = "border-bottom mb-4">Appointments</legend>
+        {% endif %}
+        <table class="table table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th>Patient Id</th>
+              {%if utype == 'patient'%}
+                <th>Date</th>
+                <th>Treatment Type</th>
+                <th>Physician/Surgeon</th>
+                <th>Time</th>
+                <th>View</th>
+              {% endif %}
+              {% if utype == 'surgeon' or utype == 'physician'%}
+                <th>Time</th>
+                <th>Prescription</th>
+                <th>Lab Test</th>
+              {% endif %}
+              {% if utype == 'surgeon'%}
+                <th>Appoint Nurse</th>
+                <th>Book Ward</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {%for appointment in appointments%}
+              <tr>
+                <td>{{appointment.patientid}}</td>
+                {% if utype == 'patient'%}
+                  <td>{{appointment.date}}</td>
+                  <td>{{appointment.treatmenttype}}</td>
+                  {% if appointment.treatmenttype == 'surgery'%}
+                    <td>{{appointment.surgeonid.name}}</td>
+                  {% else %}
+                    <td>{{appointment.physicianid.name}}</td>
+                  {%endif%}
+                <td>{{appointment.time}}</td>
+                <td><a href="{% url 'View_Appointment' patientid=appointment.patientid%}" target="_blank">Open</a></td>
+                {% endif %}
+
+                {% if utype == 'surgeon' or utype == 'physician'%}
+                  <td>{{appointment.time}}</td>
+                  <td>
+                    <a href="{% url 'New_Prescription' patientid=appointment.patientid%}" target="_blank">Edit</a>
+                    <a href="{% url 'View_Prescriptions' prescriptionid=appointment.patientid%}" target="_blank">Open</a>
+                  </td>
+                  <td>
+                    <a href="{% url 'New_LabTest' patientid=appointment.patientid%}" target="_blank">Edit</a>
+                    <a href="{% url 'View_LabReport' reportid=appointment.patientid%}" target="_blank">Open</a>
+                  </td>
+                {% endif %}
+                {% if utype == 'surgeon'%}
+                  <td><a href="{% url 'Book_Nurse'%}">Appoint</a></td>
+                  <td><a href="{% url 'Book_Ward' patientid=appointment.patientid%}" target="_blank">Book</a></td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
